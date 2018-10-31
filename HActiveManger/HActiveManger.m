@@ -367,6 +367,21 @@
         }
 }
 
+/**
+ 获取全部存储数据
+ @param key key值
+ @param Complete 获取完成状态（True，Flase）
+ */
++(void)getAllKey:(NSString *)key Complete:(void(^)(BOOL complete,NSMutableArray *CompleteArray))Complete
+{
+
+    [self Parameter:@"" Key:key Complete:Complete];
+   id getAllData = [[self currentDefaults] objectForKey:key];
+    if (Complete) {
+        Complete(true,getAllData);
+    }
+}
+
 
 /**
  全部删除
@@ -410,33 +425,34 @@
 
 /**
  为了安全起见。对传入的字段需要做一次安全处理，防止传入的数据中有垃圾数据导致崩溃
-
  @param parameter 字典
  @return 返回安全数据字典
  */
 +(NSMutableDictionary *)fileterParameter:(NSMutableDictionary *)parameter
 {
-    NSArray *allKey = [parameter allKeys];
+
+    NSMutableDictionary *copyDict =[parameter mutableCopy];
+    NSArray *allKey = [copyDict allKeys];
     for (int index=0; index<allKey.count; index++) {
 
-        if ([[parameter objectForKey:allKey[index]] isKindOfClass:[NSNull class]]) {
+        if ([[copyDict objectForKey:allKey[index]] isKindOfClass:[NSNull class]]) {
 
-            [parameter setObject:@"" forKey:allKey[index]];
+            [copyDict setObject:@"" forKey:allKey[index]];
 
-        }else if ([parameter objectForKey:allKey[index]] ==nil){
+        }else if ([copyDict objectForKey:allKey[index]] ==nil){
 
-            [parameter setObject:@"" forKey:allKey[index]];
+            [copyDict setObject:@"" forKey:allKey[index]];
 
-        }else if ([[parameter objectForKey:allKey[index]] isKindOfClass:[NSNumber class]]){
+        }else if ([[copyDict objectForKey:allKey[index]] isKindOfClass:[NSNumber class]]){
 
-            NSString *value = [NSString stringWithFormat:@"%@",[parameter objectForKey:allKey[index]]];
-            [parameter setObject:value forKey:allKey[index]];
+            NSString *value = [NSString stringWithFormat:@"%@",[copyDict objectForKey:allKey[index]]];
+            [copyDict setObject:value forKey:allKey[index]];
         }else{
-            NSString *value = [NSString stringWithFormat:@"%@",[parameter objectForKey:allKey[index]]];
-            [parameter setObject:value forKey:allKey[index]];
+            NSString *value = [NSString stringWithFormat:@"%@",[copyDict objectForKey:allKey[index]]];
+            [copyDict setObject:value forKey:allKey[index]];
         }
     }
 
-    return parameter;
+    return copyDict;
 }
 @end

@@ -68,6 +68,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
+ 获取全部存储数据
+ @param key key值
+ @param Complete 获取完成状态（True，Flase）
+ */
++(void)getAllKey:(NSString *)key Complete:(void(^)(BOOL complete,NSMutableArray *CompleteArray))Complete;
+
+
+/**
  全部删除
   @param key key值
  @param Complete 删除完成状态（True，Flase）
